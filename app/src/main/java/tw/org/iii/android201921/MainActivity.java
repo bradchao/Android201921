@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
@@ -15,9 +16,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
+import com.google.firebase.ml.vision.common.FirebaseVisionPoint;
 import com.google.firebase.ml.vision.face.FirebaseVisionFace;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceContour;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabel;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetector;
 import com.google.firebase.ml.vision.label.FirebaseVisionLabelDetectorOptions;
@@ -123,7 +127,41 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void afterFaceDetect(List<FirebaseVisionFace> faces){
+        for (FirebaseVisionFace face : faces) {
+            Rect bounds = face.getBoundingBox();
+            float rotY = face.getHeadEulerAngleY();  // Head is rotated to the right rotY degrees
+            float rotZ = face.getHeadEulerAngleZ();  // Head is tilted sideways rotZ degrees
 
+            // If landmark detection was enabled (mouth, ears, eyes, cheeks, and
+            // nose available):
+            FirebaseVisionFaceLandmark leftEar = face.getLandmark(FirebaseVisionFaceLandmark.LEFT_EAR);
+            if (leftEar != null) {
+                FirebaseVisionPoint leftEarPos = leftEar.getPosition();
+                float earX = leftEarPos.getX();
+                float earY = leftEarPos.getY();
+                Log.v("brad", "ear left:" +earX + " x " + earY);
+            }
+
+            // If contour detection was enabled:
+            List<FirebaseVisionPoint> leftEyeContour =
+                    face.getContour(FirebaseVisionFaceContour.LEFT_EYE).getPoints();
+            List<FirebaseVisionPoint> upperLipBottomContour =
+                    face.getContour(FirebaseVisionFaceContour.UPPER_LIP_BOTTOM).getPoints();
+
+            // If classification was enabled:
+            if (face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
+                float smileProb = face.getSmilingProbability();
+                Log.v("brad", "ｓｍｉｌｅ：" + smileProb);
+            }
+            if (face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
+                float rightEyeOpenProb = face.getRightEyeOpenProbability();
+            }
+
+            // If face tracking was enabled:
+            if (face.getTrackingId() != FirebaseVisionFace.INVALID_ID) {
+                int id = face.getTrackingId();
+            }
+        }
     }
 
 }
