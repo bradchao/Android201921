@@ -93,15 +93,10 @@ public class MainActivity extends AppCompatActivity {
                         .build();
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.brad);
+        Log.v("brad", "source: " + bitmap.getWidth() + " x " + bitmap.getHeight());
 
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
 
-        FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
-                .setWidth(480)   // 480x360 is typically sufficient for
-                .setHeight(360)  // image recognition
-                .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-                .setRotation(FirebaseVisionImageMetadata.ROTATION_0)
-                .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
         Task<List<FirebaseVisionFace>> result =
@@ -129,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
     private void afterFaceDetect(List<FirebaseVisionFace> faces){
         for (FirebaseVisionFace face : faces) {
             Rect bounds = face.getBoundingBox();
+            int bw = bounds.width(), bh = bounds.height();
+            Log.v("brad", "bound : " + bw + " x " + bh);
+            int cx = bounds.centerX(), cy = bounds.centerY();
+            Log.v("brad", "bound center: " + cx + " x " + cy);
+
+
+
             float rotY = face.getHeadEulerAngleY();  // Head is rotated to the right rotY degrees
             float rotZ = face.getHeadEulerAngleZ();  // Head is tilted sideways rotZ degrees
 
