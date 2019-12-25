@@ -30,8 +30,11 @@ public class MyView extends View {
         super.onDraw(canvas);
 
         bitmap = BitmapFactory.decodeResource(resources, R.drawable.brad);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        canvas.drawLine(0,0,100,100, paint);
+        canvas.drawBitmap(bitmap, -2109+620, -1268+1133/2, null);
+        canvas.drawLine(0, 1268, 1240, 1268,paint);
+        canvas.drawLine(1240,0,1240,1268, paint);
+
+        canvas.drawCircle(2073.192f-2109+620, 1257.715f-1268+1133/2,50, paint);
 
 
     }

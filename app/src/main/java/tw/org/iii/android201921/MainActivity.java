@@ -144,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.v("brad", "ear left:" +earX + " x " + earY);
             }
 
+            FirebaseVisionFaceLandmark nose = face.getLandmark(FirebaseVisionFaceLandmark.NOSE_BASE);
+            if (nose != null) {
+                FirebaseVisionPoint nosePos = nose.getPosition();
+                float noseX = nosePos.getX();
+                float noseY = nosePos.getY();
+                Log.v("brad", "nose :" +noseX + " x " + noseY);
+            }
+
             // If contour detection was enabled:
             List<FirebaseVisionPoint> leftEyeContour =
                     face.getContour(FirebaseVisionFaceContour.LEFT_EYE).getPoints();
